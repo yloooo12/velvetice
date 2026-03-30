@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Velvet Ice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <img src="logo.jpg" alt="Velvet Ice" class="brand-logo" />
+        <span>Velvet Ice</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+            <nav class="nav-links" id="navLinks">
+        <a href="menu.html">Menu</a>
+        <a href="flavors.html">Flavors</a>
+        <a href="catering.html">Catering</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html" class="active">Contact</a>
+      </nav>
+      <a href="contact.html" class="nav-cta">Book an Event</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <span class="badge reveal">Get in touch</span>
+        <h1 class="section-title reveal">We'd love to<br>hear from you.</h1>
+        <p class="section-copy reveal">Have a question, want to place an order, or ready to book us for your event? Drop us a message and we'll get back to you fast.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0;">
+      <div class="container">
+        <div class="contact-grid">
+          <aside class="contact-card reveal">
+            <h3>Find us</h3>
+            <p>We're based in Dallas, Texas and available for events across the area.</p>
+            <ul class="contact-list">
+              <li><strong>Email</strong>info@velvetice.org</li>
+              <li><strong>Phone</strong>(000) 123-4567</li>
+              <li><strong>Location</strong>Dallas, Texas</li>
+              <li><strong>Instagram</strong>@velvetdfw</li>
+            </ul>
+            <div class="faq-grid">
+              <div class="faq-item">
+                <h3>Fast response</h3>
+                <p>We typically reply within a few hours. For urgent inquiries, reach us directly on Instagram or WhatsApp.</p>
+              </div>
+              <div class="faq-item">
+                <h3>Book early</h3>
+                <p>Event slots fill up fast, especially on weekends. Reach out at least 1–2 weeks in advance to secure your date.</p>
+              </div>
+            </div>
+          </aside>
+
+          <div class="contact-card reveal">
+            <h3>Send us a message</h3>
+            <p>Fill out the form below and we'll get back to you with everything you need to know.</p>
+            <form class="contact-form">
+              <input type="text" placeholder="Full name" />
+              <input type="email" placeholder="Email address" />
+              <input type="text" placeholder="Phone number" />
+              <select>
+                <option>What are you inquiring about?</option>
+                <option>General Order</option>
+                <option>Catering</option>
+                <option>Private Event</option>
+                <option>Brand Partnership</option>
+              </select>
+              <textarea class="full" placeholder="Tell us a little about what you need..."></textarea>
+              <button type="button" class="primary full">Submit Inquiry</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:12px;">
+            <img src="logo.jpg" alt="Velvet Ice" class="brand-logo" />
+            <span>Velvet Ice</span>
+          </div>
+          <p>Premium handcrafted Italian ice and frozen desserts made with real fruit and bold flavors.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a>
+        <a href="flavors.html">Flavors</a></li>
+            <li><a href="catering.html">Catering</a>
+        <a href="gallery.html">Gallery</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@velvetice.org">info@velvetice.org</a></li>
+            <li><a href="tel:+10001234567">(000) 123-4567</a></li>
+            <li>Dallas, Texas</li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-note">© 2026 Velvet Ice. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+    const observer = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }), { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>

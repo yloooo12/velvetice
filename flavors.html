@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Flavors — Velvet Ice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    /* ── Filter bar ── */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 36px;
+    }
+    .filter-btn {
+      height: 40px;
+      padding: 0 20px;
+      border-radius: 999px;
+      border: 1.5px solid var(--border);
+      background: rgba(255,255,255,0.8);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+    }
+    .filter-btn:hover,
+    .filter-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(31,142,245,0.28);
+    }
+
+    /* ── Flavor grid ── */
+    .flavors-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 48px;
+    }
+
+    .flavor-card {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      transition: transform 0.28s ease, box-shadow 0.28s ease;
+    }
+    .flavor-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    /* Color swatch top bar */
+    .flavor-swatch {
+      height: 8px;
+      width: 100%;
+    }
+
+    .flavor-body { padding: 24px; }
+
+    .flavor-tags {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .ftag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+    .ftag-bestseller { background: rgba(31,142,245,0.1);  color: var(--primary-dark); }
+    .ftag-seasonal   { background: rgba(255,216,77,0.18); color: #8a6200; }
+    .ftag-limited    { background: rgba(255,126,182,0.14); color: #b0004e; }
+    .ftag-new        { background: rgba(126,231,255,0.2); color: #0a6a8a; }
+    .ftag-vegan      { background: rgba(100,200,120,0.15); color: #1a6b35; }
+
+    .flavor-card h3 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.3rem;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+    .flavor-card .flavor-desc {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.7;
+      margin: 0 0 18px;
+    }
+
+    /* Allergen row */
+    .allergen-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+    }
+    .allergen-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-right: 4px;
+    }
+    .allergen-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(23,50,77,0.06);
+      color: var(--text);
+    }
+    .allergen-chip.free {
+      background: rgba(100,200,120,0.12);
+      color: #1a6b35;
+    }
+
+    /* Availability badge */
+    .avail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .avail-dot {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    .avail-dot::before {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+    .avail-dot.seasonal::before { background: #f59e0b; }
+    .avail-dot.limited::before  { background: #ef4444; }
+
+    /* ── Legend ── */
+    .legend {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 20px 24px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      backdrop-filter: blur(10px);
+      margin-bottom: 40px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      color: var(--muted);
+    }
+
+    /* ── Allergen note ── */
+    .allergen-note {
+      background: rgba(255,216,77,0.12);
+      border: 1px solid rgba(255,216,77,0.3);
+      border-radius: var(--radius-md);
+      padding: 18px 22px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-top: 48px;
+    }
+    .allergen-note-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .allergen-note p { margin: 0; font-size: 0.9rem; color: var(--text); line-height: 1.7; }
+    .allergen-note strong { color: var(--text); }
+
+    @media (max-width: 1080px) { .flavors-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px)  { .flavors-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <img src="logo.jpg" alt="Velvet Ice" class="brand-logo" />
+        <span>Velvet Ice</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+            <nav class="nav-links" id="navLinks">
+        <a href="menu.html">Menu</a>
+        <a href="flavors.html" class="active">Flavors</a>
+        <a href="catering.html">Catering</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <a href="contact.html" class="nav-cta">Book an Event</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero -->
+    <section class="page-hero">
+      <div class="container page-hero-inner">
+        <span class="badge reveal">🍧 20+ Flavors</span>
+        <h1 class="section-title reveal">Every flavor tells<br>a story.</h1>
+        <p class="section-copy reveal">Real fruit, bold combinations, and a whole lot of heart. Browse our full lineup — including allergen info and seasonal availability.</p>
+
+        <div class="filter-bar reveal">
+          <button class="filter-btn active" data-filter="all">All Flavors</button>
+          <button class="filter-btn" data-filter="fruit">Fruit</button>
+          <button class="filter-btn" data-filter="tropical">Tropical</button>
+          <button class="filter-btn" data-filter="sweet">Sweet &amp; Candy</button>
+          <button class="filter-btn" data-filter="seasonal">Seasonal</button>
+          <button class="filter-btn" data-filter="vegan">Vegan</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+
+        <!-- Legend -->
+        <div class="legend reveal">
+          <div class="legend-item"><span class="ftag ftag-bestseller">Best Seller</span> Most ordered</div>
+          <div class="legend-item"><span class="ftag ftag-seasonal">Seasonal</span> Limited time</div>
+          <div class="legend-item"><span class="ftag ftag-limited">Limited</span> While stocks last</div>
+          <div class="legend-item"><span class="ftag ftag-new">New</span> Just added</div>
+          <div class="legend-item"><span class="ftag ftag-vegan">🌱 Vegan</span> Plant-based</div>
+        </div>
+
+        <!-- Flavor cards -->
+        <div class="flavors-grid" id="flavorsGrid">
+
+          <!-- 1 -->
+          <div class="flavor-card reveal" data-category="fruit tropical">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #ffd45a, #ff9d12, #ff6b00);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot">Available year-round</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-bestseller">⭐ Best Seller</span>
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Sunset Mango Splash</h3>
+              <p class="flavor-desc">Sweet, tangy, and bursting with real mango flavor. Made with Ataulfo mangoes for a smooth, rich taste. Our most-ordered cup, hands down.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="flavor-card reveal" data-category="fruit">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #ff96c7, #c084fc, #f472b6);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot">Available year-round</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-bestseller">⭐ Best Seller</span>
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Berry Chill Mix</h3>
+              <p class="flavor-desc">A vibrant blend of strawberry, blueberry, and raspberry. As pretty as it is delicious — perfect for photos and taste buds alike.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="flavor-card reveal" data-category="sweet seasonal">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #e9d5ff, #fbcfe8, #fde68a);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot seasonal">Seasonal availability</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-seasonal">🌸 Seasonal</span>
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Cotton Candy Freeze</h3>
+              <p class="flavor-desc">Light, fluffy sweetness in every bite. Inspired by the classic carnival treat — a crowd-pleaser for kids and adults alike.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4 -->
+          <div class="flavor-card reveal" data-category="tropical sweet">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #7ee7ff, #38bdf8, #bae6fd);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot limited">Limited time only</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-limited">🔥 Limited Time</span>
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Tropical Blue Burst</h3>
+              <p class="flavor-desc">A bold blue raspberry and coconut combo that looks amazing and tastes even better. One of our most Instagrammable flavors.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip">⚠ Tree nuts (coconut)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 -->
+          <div class="flavor-card reveal" data-category="tropical fruit">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #fdba74, #fb923c, #fde68a);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot">Available year-round</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Passion Fruit Sunrise</h3>
+              <p class="flavor-desc">Bright, tart passion fruit balanced with a hint of orange. A tropical escape in every spoonful — refreshing and bold.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 -->
+          <div class="flavor-card reveal" data-category="fruit seasonal">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #86efac, #4ade80, #bbf7d0);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot seasonal">Seasonal availability</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-new">✨ New</span>
+                <span class="ftag ftag-seasonal">🌸 Seasonal</span>
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Honeydew Mint Chill</h3>
+              <p class="flavor-desc">Fresh honeydew melon with a cool mint finish. Light, clean, and incredibly refreshing — perfect for hot summer days.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 7 -->
+          <div class="flavor-card reveal" data-category="sweet">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #fca5a5, #f87171, #fde68a);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot">Available year-round</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Strawberry Lemonade</h3>
+              <p class="flavor-desc">Classic strawberry meets zesty lemon in a perfectly balanced combo. Sweet, sour, and totally addictive.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 8 -->
+          <div class="flavor-card reveal" data-category="tropical seasonal">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #fde68a, #fbbf24, #fb923c);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot seasonal">Seasonal availability</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-seasonal">🌸 Seasonal</span>
+                <span class="ftag ftag-new">✨ New</span>
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Pineapple Coconut Dream</h3>
+              <p class="flavor-desc">A creamy tropical blend of sweet pineapple and coconut. Tastes like a vacation in a cup — smooth and indulgent.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip">⚠ Tree nuts (coconut)</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 9 -->
+          <div class="flavor-card reveal" data-category="sweet vegan">
+            <div class="flavor-swatch" style="background: linear-gradient(90deg, #c4b5fd, #a78bfa, #818cf8);"></div>
+            <div class="flavor-body">
+              <div class="avail-row">
+                <span class="avail-dot">Available year-round</span>
+              </div>
+              <div class="flavor-tags">
+                <span class="ftag ftag-vegan">🌱 Vegan</span>
+              </div>
+              <h3>Grape Frost</h3>
+              <p class="flavor-desc">Deep, rich Concord grape flavor with a frosty finish. Bold and sweet — a classic that never gets old.</p>
+              <div class="allergen-row">
+                <span class="allergen-label">Allergens:</span>
+                <span class="allergen-chip free">✓ Gluten-free</span>
+                <span class="allergen-chip free">✓ Dairy-free</span>
+                <span class="allergen-chip free">✓ Nut-free</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Allergen note -->
+        <div class="allergen-note reveal">
+          <div class="allergen-note-icon">⚠️</div>
+          <p><strong>Allergen Notice:</strong> While many of our flavors are free from common allergens, all products are prepared in a shared facility. Cross-contamination is possible. If you have a severe allergy, please contact us directly before ordering so we can advise you properly.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section" style="padding-top: 0;">
+      <div class="container">
+        <div class="cta-band reveal">
+          <span class="badge" style="background:rgba(255,255,255,0.16); color:#fff; border-color:rgba(255,255,255,0.24);">Can't decide?</span>
+          <h2 class="section-title">Try them all.</h2>
+          <p class="section-copy">Order a mix-and-match cup or book us for your event and let your guests pick their favorites.</p>
+          <div class="cta-actions">
+            <a href="contact.html" class="secondary">Place an Order</a>
+            <a href="catering.html" class="primary" style="background:#fff; color:#1770cf; box-shadow:none;">Book Catering</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:12px;">
+            <img src="logo.jpg" alt="Velvet Ice" class="brand-logo" />
+            <span>Velvet Ice</span>
+          </div>
+          <p>Premium handcrafted Italian ice and frozen desserts made with real fruit and bold flavors.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a></li>
+            <li><a href="flavors.html">Flavors</a></li>
+            <li><a href="gallery.html">Gallery</a></li>
+            <li><a href="catering.html">Catering</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@velvetice.org">info@velvetice.org</a></li>
+            <li><a href="tel:+10001234567">(000) 123-4567</a></li>
+            <li>Dallas, Texas</li>
+            <li><a href="#">@velvetdfw</a></li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-note">© 2026 Velvet Ice. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Nav toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks   = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+    // Reveal
+    const observer = new IntersectionObserver(entries => entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+    }), { threshold: 0.08 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Filter
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const filter = btn.dataset.filter;
+        document.querySelectorAll('.flavor-card').forEach(card => {
+          const cats = card.dataset.category || '';
+          const show = filter === 'all' || cats.includes(filter);
+          card.style.display = show ? 'block' : 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

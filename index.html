@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Velvet Ice — Premium Frozen Treats</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="shared.css">
+  <style>
+    .hero { position: relative; padding: 80px 0 64px; }
+    .hero-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 48px; align-items: center; }
+    .hero h1 {
+      font-family: 'Fredoka', sans-serif;
+      font-size: clamp(3.2rem, 7vw, 6rem);
+      line-height: 0.96; letter-spacing: -0.05em; margin: 22px 0; max-width: 760px;
+      background: linear-gradient(135deg, #0a4fa8 0%, #1f8ef5 40%, #ff7eb6 75%, #ffd84d 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+      animation: shimmer 5s linear infinite;
+    }
+    .hero p { max-width: 620px; color: var(--muted); font-size: 1.15rem; line-height: 1.85; margin-bottom: 32px; }
+    .hero-buttons { display: flex; flex-wrap: wrap; gap: 14px; }
+    .hero-buttons a { min-height: 54px; padding: 0 22px; border-radius: 999px; font-weight: 700; border: 0; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hero-buttons a:hover { transform: translateY(-2px); box-shadow: 0 14px 32px rgba(31, 142, 245, 0.22); }
+
+    .hero-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 28px; max-width: 660px; }
+    .stat-card { padding: 18px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow); backdrop-filter: blur(12px); transition: transform 0.25s ease, box-shadow 0.25s ease; }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
+    .stat-card h3 { margin: 0 0 4px; font-family: 'Fredoka', sans-serif; font-size: 1.6rem; }
+    .stat-card p { margin: 0; color: var(--muted); font-size: 0.95rem; line-height: 1.5; }
+
+    .hero-visual { position: relative; min-height: 640px; }
+    .orb { position: absolute; border-radius: 50%; filter: blur(6px); opacity: 0.65; }
+    .orb.one { width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,126,182,0.55), rgba(255,126,182,0.1)); top: 8%; right: 6%; animation: float 6s ease-in-out infinite; }
+    .orb.two { width: 240px; height: 240px; background: radial-gradient(circle, rgba(126,231,255,0.6), rgba(126,231,255,0.1)); bottom: 4%; left: 2%; animation: float 8s ease-in-out infinite 1s; }
+    .orb.three { width: 130px; height: 130px; background: radial-gradient(circle, rgba(255,216,77,0.55), rgba(255,216,77,0.1)); top: 16%; left: 6%; animation: float 7s ease-in-out infinite 0.5s; }
+
+    .glass-card { position: absolute; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.7); box-shadow: var(--shadow); backdrop-filter: blur(16px); border-radius: var(--radius-xl); }
+    .hero-main-card { inset: 72px 20px 32px 20px; padding: 26px; overflow: hidden; }
+    .cup-grid { height: 100%; display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; align-items: end; }
+    .cup { position: relative; height: 100%; display: flex; align-items: end; justify-content: center; }
+    .cup-shape { position: relative; width: min(100%, 190px); aspect-ratio: 0.74 / 1; background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(241, 248, 255, 0.95)); clip-path: polygon(16% 4%, 84% 4%, 100% 100%, 0% 100%); border-radius: 24px; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.8), 0 16px 40px rgba(20, 79, 127, 0.14); overflow: hidden; }
+    .ice-layer { position: absolute; left: 10%; width: 80%; border-radius: 999px; filter: saturate(110%); box-shadow: inset 0 6px 10px rgba(255,255,255,0.35); }
+    .ice-layer.one { top: 18%; height: 22%; background: linear-gradient(180deg, #ffcb5f, #ff9f1a); }
+    .ice-layer.two { top: 36%; height: 20%; background: linear-gradient(180deg, #ff8bc1, #ff5da2); }
+    .ice-layer.three { top: 54%; height: 22%; background: linear-gradient(180deg, #74d6ff, #1f8ef5); }
+    .cup-alt .ice-layer.one { background: linear-gradient(180deg, #8cf1ff, #52c9ff); }
+    .cup-alt .ice-layer.two { background: linear-gradient(180deg, #ffd967, #ffb21a); }
+    .cup-alt .ice-layer.three { background: linear-gradient(180deg, #ff9fd0, #ff6aac); }
+    .topping { position: absolute; width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.88); box-shadow: inset 0 -4px 6px rgba(0,0,0,0.08); }
+    .t1 { top: 16%; left: 24%; } .t2 { top: 20%; left: 46%; } .t3 { top: 14%; right: 26%; }
+
+    .floating-pill, .floating-review, .floating-mini { padding: 14px 16px; }
+    .floating-pill { top: 12px; left: -2px; width: 220px; }
+    .floating-mini { right: -6px; bottom: 38px; width: 180px; }
+    .floating-review { left: 24px; bottom: -8px; width: 240px; }
+    .floating-title { display: block; font-weight: 800; margin-bottom: 6px; }
+    .floating-text { margin: 0; color: var(--muted); font-size: 0.92rem; line-height: 1.55; }
+
+    @media (max-width: 1080px) { .hero-grid { grid-template-columns: 1fr; } .hero-visual { min-height: 520px; } }
+    @media (max-width: 760px) {
+      .hero { padding-top: 34px; }
+      .hero h1 { font-size: clamp(2.3rem, 11vw, 3.7rem); }
+      .hero-stats { grid-template-columns: 1fr; }
+      .hero-visual { min-height: 460px; display: grid; gap: 14px; }
+      .hero-main-card { inset: 58px 8px 18px 8px; padding: 18px; }
+      .floating-pill, .floating-review, .floating-mini { position: static; width: 100%; margin-top: 14px; }
+      .cup-grid { gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="container nav">
+      <a href="index.html" class="brand">
+        <img src="logo.jpg" alt="Velvet Ice" class="brand-logo" />
+        <span>Velvet Ice</span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+            <nav class="nav-links" id="navLinks">
+        <a href="menu.html">Menu</a>
+        <a href="flavors.html">Flavors</a>
+        <a href="catering.html">Catering</a>
+        <a href="gallery.html">Gallery</a>
+        <a href="about.html">About</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <a href="contact.html" class="nav-cta">Book an Event</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div class="reveal">
+          <span class="badge">Freshly made • bold flavors • crowd favorite</span>
+          <h1>Premium frozen treats that hit different every single time.</h1>
+          <p>Velvet Ice brings you handcrafted Italian ice and frozen desserts bursting with real fruit flavor. Perfect for hot days, family outings, pop-up events, and everything in between.</p>
+          <div class="hero-buttons">
+            <a href="menu.html" class="primary">Explore Flavors</a>
+            <a href="catering.html" class="secondary">See Catering</a>
+          </div>
+          <div class="hero-stats">
+            <div class="stat-card"><h3>20+</h3><p>Bold flavors made fresh, from classic mango to seasonal specials.</p></div>
+            <div class="stat-card"><h3>5★</h3><p>Loved by hundreds of customers across Dallas and beyond.</p></div>
+            <div class="stat-card"><h3>Events</h3><p>Available for birthdays, pop-ups, weddings, and private parties.</p></div>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal">
+          <div class="orb one"></div>
+          <div class="orb two"></div>
+          <div class="orb three"></div>
+          <div class="glass-card hero-main-card">
+            <div class="cup-grid">
+              <div class="cup">
+                <div class="cup-shape">
+                  <div class="ice-layer one"></div><div class="ice-layer two"></div><div class="ice-layer three"></div>
+                  <span class="topping t1"></span><span class="topping t2"></span><span class="topping t3"></span>
+                </div>
+              </div>
+              <div class="cup cup-alt">
+                <div class="cup-shape">
+                  <div class="ice-layer one"></div><div class="ice-layer two"></div><div class="ice-layer three"></div>
+                  <span class="topping t1"></span><span class="topping t2"></span><span class="topping t3"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="glass-card floating-pill">
+            <span class="floating-title">Best for hot-day cravings</span>
+            <p class="floating-text">Real fruit flavors, vibrant colors, and a taste you'll keep coming back for.</p>
+          </div>
+          <div class="glass-card floating-mini">
+            <span class="floating-title">Order or book online</span>
+            <p class="floating-text">Easy to reach us via Instagram, WhatsApp, or the form below.</p>
+          </div>
+          <div class="glass-card floating-review">
+            <span class="floating-title">Family-friendly &amp; fun</span>
+            <p class="floating-text">Great for kids, adults, and everyone who loves a cold, refreshing treat.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="brand" style="margin-bottom:12px;">
+            <img src="logo.jpg" alt="Velvet Ice" class="brand-logo" />
+            <span>Velvet Ice</span>
+          </div>
+          <p>Premium handcrafted Italian ice and frozen desserts made with real fruit and bold flavors. Available for walk-ins, pop-ups, and private events in Dallas, Texas.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="menu.html">Menu</a>
+        <a href="flavors.html">Flavors</a></li>
+            <li><a href="catering.html">Catering</a>
+        <a href="gallery.html">Gallery</a></li>
+            <li><a href="reviews.html">Reviews</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@velvetice.org">info@velvetice.org</a></li>
+            <li><a href="tel:+10001234567">(000) 123-4567</a></li>
+            <li>Dallas, Texas</li>
+          </ul>
+        </div>
+      </div>
+      <p class="footer-note">© 2026 Velvet Ice. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
+
+    const revealItems = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+    }, { threshold: 0.1 });
+    revealItems.forEach(item => observer.observe(item));
+  </script>
+</body>
+</html>
